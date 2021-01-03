@@ -1,6 +1,12 @@
 const dotenv = require('dotenv');
 dotenv.config({path :'./config.env'});
 const mongoose  = require('mongoose');
+process.on('uncaughtException',err=>{
+    console.log(err.name,err.message);
+    process.exit(1);//unhadled exception
+    
+});
+//console.log(x);
 const app = require('./app.js');
 const tourrouter = require('./Routes/tourRoute.js');
 const DB  = process.env.DATABASE;
@@ -14,31 +20,29 @@ mongoose.connect(DB,{
     console.log('Connected');
 });
 
-const tourSchema = mongoose.Schema({
-     name:{
-         type:String,
-         unique:true,
-         required:[true,'A tour name is required']
-     },
-     price :{
-         type:Number,
-         required:[true,'A tour must have a price']
-     },
-     rating:{
-         type:Number,
-         default:4.5
-     }
-});
-const Tour = mongoose.model('Tour',tourSchema);
-const newTour = new Tour({
-name:'The Great India Tour',
-price:112,
-rating:4.9
-});
-newTour.save().then(res=>{
-    console.log(res);
-})
-app.listen(3000,()=>{
+// const newTour = new Tour({
+//     name:'The Great India Tour',
+//     price:112,
+//     rating:4.9
+//     });
+//     newTour.save().then(res=>{
+//        console.log(res);
+//     });
+const port  = process.env.PORT ||3000;
+const server = app.listen(port,()=>{
     console.log("Server Started");
 });
- 
+
+
+process.on('unhandledRejection',err=>{
+    console.log(err.name,err.message);
+    server.close(()=>{
+        console.log("Shutting Down the server......");
+        process.exit(1);//unhadled exception
+    });
+});
+
+
+
+
+ //save
