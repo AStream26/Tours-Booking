@@ -6,7 +6,7 @@ dotenv.config({path :`./config.env`});
 const Tour = require('./models/tourmodel.js');
 const DB  = process.env.DATABASE;
 //console.log(DB);
-const tours = JSON.parse(fs.readFileSync('./dev-data/data/tours-simple.json','utf-8'));
+const tours = JSON.parse(fs.readFileSync('./dev-data/data/tours.json','utf-8'));
 mongoose.connect(DB,{
     useNewUrlParser:true,
     useFindAndModify:false,

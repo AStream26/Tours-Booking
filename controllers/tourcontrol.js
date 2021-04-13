@@ -2,7 +2,7 @@ const Tour = require('./../models/tourmodel.js');
 const APIFeatures = require('./../utils/apifeatures.js');
 const catchAsync = require('./../utils/catchAsync.js');
 const ErrorHandle = require('./../utils/Errorhandle.js');
-
+const factory = require('./factoryhandler');
 //Aliasing
 exports.aliasing = (req,res,next)=>{
 
@@ -52,7 +52,7 @@ exports.getAlltour = catchAsync(async (req,res,next)=>{
 });
 
 exports.gettour =catchAsync(async (req,res,next)=>{
-    const tour = await Tour.findById(req.params.id);
+    const tour = await Tour.findById(req.params.id).populate('reviews');
      
     if(!tour){ //handlig tour null error 404
       return next(new ErrorHandle("Tour cannot be foud",404));
@@ -83,16 +83,7 @@ exports.gettour =catchAsync(async (req,res,next)=>{
 // }
   });
 
-  exports.newtour =catchAsync( async (req,res,next)=>{
-    //  console.log("adding....");
-    const newtour = await Tour.create(req.body);
-
-    res.status(201).json({
-      status:'success',
-      data :{
-          tour:newtour
-      }
-  });
+  exports.newtour = factory.createOne(Tour);
     //   try{
     //       const newtour = await Tour.create(req.body);
 
@@ -110,24 +101,9 @@ exports.gettour =catchAsync(async (req,res,next)=>{
     //       });
     //   }
   
-    });
+   
 
-    exports. updatetour =catchAsync( async (req,res,next)=>{
-        const tour = await Tour.findByIdAndUpdate(req.params.id,req.body,{
-            new:true,
-            runValidators:true
-        });
-
-        if(!tour){ //handlig tour null error 404
-            return next(new ErrorHandle("Tour cannot be foud",404));
-          }
-
-        res.status(200).json({
-           status:'success',
-           data:{
-             tour
-           }
-       });
+    exports. updatetour = factory.updateOne(Tour);
     //    try{
     //      const tour = await Tour.findByIdAndUpdate(req.params.id,req.body,{
     //          new:true,
@@ -148,15 +124,18 @@ exports.gettour =catchAsync(async (req,res,next)=>{
     //        });
 
     //    }
-});
-exports.deletetour =catchAsync( async (req,res,next)=>{
-    await Tour.findByIdAndDelete(req.params.id);
-    res.status(204).json({
-        status:'success',
-        data:{
-          tours:null
-        }
-    });
+
+
+exports.deletetour =  factory.deleteOne(Tour);
+// exports.deletetour =catchAsync( async (req,res,next)=>{
+//     await Tour.findByIdAndDelete(req.params.id);
+//     res.status(204).json({
+//         status:'success',
+//         data:{
+//           tours:null
+//         }
+//     });
+// });
  
 //   try{
 //     await Tour.findByIdAndDelete(req.params.id);
@@ -175,7 +154,7 @@ exports.deletetour =catchAsync( async (req,res,next)=>{
 //   }
      
 
-});
+
 
 exports.getstats =catchAsync( async (req,res,next)=>{
     const stats = await Tour.aggregate([
