@@ -12,13 +12,20 @@ userrouter.route('/singup').post(authcontrol.singup);
 userrouter.route('/login').post(authcontrol.login);
 userrouter.route('/forgotpassword').post(authcontrol.forgotPassword);
 userrouter.route('/resetpassword/:token').post(authcontrol.resetpassword);
-userrouter.route('/updatepassword').patch(authcontrol.protect,authcontrol.updatePassword);
 
-userrouter.route('/updateuser').post(authcontrol.protect,usercontrol.updateMe);
-userrouter.route('/deleteuser').delete(authcontrol.protect,usercontrol.deleteMe);
+
+//Protect all routes after this middle ware
+userrouter.use(authcontrol.protect);
+
+userrouter.route('/updatepassword').patch(authcontrol.updatePassword);
+userrouter.route('/me').get(usercontrol.getMe,usercontrol.getuser);
+userrouter.route('/updateuser').post(usercontrol.updateMe);
+userrouter.route('/deleteuser').delete(usercontrol.deleteMe);
 
 
 //users route
+
+userrouter.use(authcontrol.validateuser("admin"));
 userrouter.route('/').get(usercontrol.getAllusers).post(usercontrol.newuser);
 userrouter.route('/:id').get(usercontrol.getuser).patch(usercontrol.updateuser).delete(usercontrol.deleteuser);
 

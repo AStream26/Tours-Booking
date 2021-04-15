@@ -5,7 +5,7 @@ class APIFeatures{
         // console.log(querystring);
         this.query = query;
         this.querystring = querystring;
-        console.log(this.querystring);
+        //console.log(this.querystring);
        
     }
     filter(){

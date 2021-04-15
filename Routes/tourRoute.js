@@ -14,10 +14,11 @@ tourrouter.route('/:tourid/review',reviewRoute);
 //creating and mounting router
 tourrouter.route('/get-5-cheap').get(tourcontrol.aliasing,tourcontrol.getAlltour);
 tourrouter.route('/get-tour-stats').get(tourcontrol.getstats);
-tourrouter.route('/get-monthly-plans/:year').get(tourcontrol.getmonthelyplan);
+tourrouter.route('/get-monthly-plans/:year').get(Authcontroller.validateuser("lead-guide","admin","guide"),tourcontrol.getmonthelyplan);
 
-tourrouter.route('/').get(Authcontroller.protect,tourcontrol.getAlltour).post( Authcontroller.protect,tourcontrol.newtour);
-tourrouter.route('/:id').get(tourcontrol.gettour).patch(tourcontrol.updatetour).delete(Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.deletetour);
+
+tourrouter.route('/').get(tourcontrol.getAlltour).post( Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.newtour);
+tourrouter.route('/:id').get(tourcontrol.gettour).patch(Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.updatetour).delete(Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.deletetour);
 tourrouter.route('/:id/review').post(Authcontroller.protect,Authcontroller.validateuser('user'),reviewControl.createReview);
 
 

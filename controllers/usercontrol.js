@@ -16,17 +16,10 @@ const filterObject = (obj,field)=>{
     return newobj;
 }
 
-exports. getAllusers = catchAsync( async (req,res)=>{
-    
-    const users = await User.find();
-    res.status(200).json({
-        status:"success",
-        data:{
-            users
-        }
-    });
-})
-
+exports.getMe = (req,res,next)=>{
+    req.params.id = req.user.id;
+    next();
+}
 exports.updateMe = catchAsync(async (req,res,next)=>{
      
     const canUpdate = ['email','Name'];
@@ -62,12 +55,8 @@ exports.deleteMe = catchAsync(async (req,res,next)=>{
 });
 
 
-exports.getuser = (req,res)=>{
-    res.status(500).json({
-        status:"Error",
-        message:"Route not defined"
-    });
-}
+exports.getuser =factory.getOne(User);
+exports. getAllusers =factory.getALL(User);
 exports. updateuser =factory.updateOne(User);
 exports. deleteuser = factory.deleteOne(User);
 

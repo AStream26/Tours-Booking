@@ -1,5 +1,27 @@
 const catchAsync = require('./../utils/catchAsync.js');
 const ErrorHandle = require('./../utils/Errorhandle.js');
+const APIFeatures = require('./../utils/apifeatures.js');
+
+
+exports.getALL = (Modal)=>catchAsync(async (req,res,next)=>{
+  // console.log(new ApiFeatures());
+   //Executing the query
+
+   const fi  = {};//for nested review route
+   if(req.params.tourid)fi = {
+       tour:req.params.tourid
+   }
+   const filter = new APIFeatures(Modal.find(fi),req.query).filter().sort().limitFeild().pagitaion();
+   //console.log(filter);
+  const doc = await filter.query;
+
+  res.status(200).json({
+   status:'success',
+   data:{
+     data:doc
+   }
+});
+});
 
 exports.deleteOne = Modal=> catchAsync( async (req,res,next)=>{
   const doc = await Modal.findByIdAndDelete(req.params.id)
@@ -43,5 +65,23 @@ exports.createOne = Modal=> catchAsync( async (req,res,next)=>{
         data:doc
     }
 });
-})
+});
+
+exports.getOne = (Modal,popoptions) =>catchAsync(async (req,res,next)=>{
+  const query =  Modal.findById(req.params.id);
+  if(popoptions)
+  query = query.populate(popoptions);
+  const doc = await query;
+   
+  if(!doc){ //handlig doc null error 404
+    return next(new ErrorHandle("doc cannot be foud",404));
+  }
+  // const doc = docs.find(el =>el.id ===id);
+  res.status(200).json({
+      status:'success',
+      data:{
+        data:doc
+      }
+  });
+});
 

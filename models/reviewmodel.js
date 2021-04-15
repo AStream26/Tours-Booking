@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Tour = require('./tourmodel');
 
 const reviewSchema = mongoose.Schema({
     review:{
@@ -7,8 +8,19 @@ const reviewSchema = mongoose.Schema({
     },
     ratting:{
         type:Number,
-        min:1,
-        max:5
+        default:4.5,
+        min:[1,'Rating must be above 1.0'],
+        max:[5,'Rating must be below 5.0']
+    },
+    ratingAverage:{
+       type:Number,
+       default:4.5,
+       min:[1,'Rating must be above 1.0'],
+       max:[5,'Rating must be below 5.0']
+    },
+    ratingQuantity:{
+       type:Number,
+       default:0
     },
     createdAt:{
      type:Date,
@@ -41,8 +53,42 @@ this.populate({
     path:'user',
     select:'name photo'
 });
+
+
 });
 
+reviewSchema.statics.calAverage = async function(tourid){
+    const stats = await this.aggregate([
+     {
+         $match:{tour:tourid}
+     },
+     {
+         $group:{
+             _id:'$tour',
+             nrating:{$sum:1},
+             avgRating:{$avg:'$rating'}
+
+         }
+     }
+    ]);
+
+   if(stats.length>0){
+    await Tour.findByIdAndUpdate(tourid,{
+        ratingQuantity:stats[0].nrating,
+        ratingAverage:stats[0].avgRating
+       });
+   }
+   else{
+    await Tour.findByIdAndUpdate(tourid,{
+        ratingQuantity:1,
+        ratingAverage:4.5
+       });
+   }
+}
+reviewSchema.post('save',function(){
+    this.constructor.calAverage(this.tour);
+    next();
+})
 
 
 const Review = mongoose.model('Review',reviewSchema);
