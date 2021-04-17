@@ -42,7 +42,7 @@ const importdata = async ()=>{
 const deletedata = async ()=>{
     try{
    await Tour.deleteMany();
-   await User.deleteMany();
+   await USER.deleteMany();
    await REVIEW.deleteMany();
    console.log("Data Successfully Deleted");
 

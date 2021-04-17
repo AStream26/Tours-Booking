@@ -1,5 +1,6 @@
-const { findSourceMap } = require('module');
 const mongoose  = require('mongoose');
+
+
 const slugify = require('slugify');
 const tourSchema = mongoose.Schema({
     name:{
@@ -93,6 +94,10 @@ const tourSchema = mongoose.Schema({
     toObject:{virtuals:true}
 });
 
+
+tourSchema.index({startLocation:'2dsphere'});
+
+
 tourSchema.virtual('durationweek').get(function(){
     return this.duration/7;
 });
@@ -121,7 +126,7 @@ tourSchema.pre(/^find/,function(next){
 tourSchema.pre(/^find/,function(next){
    this.populate({
      path:'guides',
-     select:'- __v -passwordChangeAt'
+     select:'-__v -passwordChangeAt'
    });
    next();
 });
@@ -138,10 +143,15 @@ tourSchema.pre(/^find/,function(next){
 // });
 
 //AGGREGATE MIDDDLEWARE
-tourSchema.pre('aggregate',function(next){
-    this.pipeline().unshift({$match:{secretTour:{$ne:true}}});
-next();
-});
+// tourSchema.pre('aggregate',function(next){
+//     this.pipeline().unshift({$match:{secretTour:{$ne:true}}});
+// next();
+// });
+
+
+
+
+
 const Tour = mongoose.model('Tour',tourSchema);
 module.exports = Tour;
 

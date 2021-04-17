@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan  = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -9,8 +10,11 @@ const AppError = require('./utils/Errorhandle.js');
 const userrouter = require('./Routes/userRouter');
 const tourrouter = require('./Routes/tourRoute');
 const reviewrouter = require('./Routes/reviewRoute');
+
 const app = express();
 
+app.set('view engine','pug');
+app.set('views',path.join(__dirname,'views'));
 
 const limiters = rateLimit({
     max:100,
@@ -61,14 +65,29 @@ app.use((req,res,next)=>{
 
 
 
+app.get('/',(req,res)=>{
+  res.status(200).render('base',{
+      tour:"Manali",
+      user:"Avi Srivastava"
+  });  
+});
+app.get('/overview',(req,res)=>{
+   res.status(200).render('overview',{
+       title:"All Tours"
+   });
+});
 
-
+app.get('/tour',(req,res)=>{
+    res.status(200).render('tour',{
+        title:"Kasol"
+    });
+ });
 
 app.use('/api/v1/tours',tourrouter);
 app.use('/api/v1/users',userrouter);
 app.use('/api/v1/review',reviewrouter);
 app.all('*',(req,res,next)=>{
-    next(new AppError(`can't find the ${req.originalUrl} route`,404));
+    return next(new AppError(`can't find the ${req.originalUrl} route`,404));
 });
 
 app.use(Error);

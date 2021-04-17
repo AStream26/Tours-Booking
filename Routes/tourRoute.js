@@ -22,7 +22,10 @@ tourrouter.route('/:id').get(tourcontrol.gettour).patch(Authcontroller.protect,A
 tourrouter.route('/:id/review').post(Authcontroller.protect,Authcontroller.validateuser('user'),reviewControl.createReview);
 
 
+//geo-spatial queries
 
+tourrouter.route('/tour-within/:distance/center/:latlng/unit/:unit').get(tourcontrol.tourwithin);
+tourrouter.route('/distances/:latlng/unit/:unit').get(tourcontrol.getDistances);
 
 module.exports = tourrouter;
 

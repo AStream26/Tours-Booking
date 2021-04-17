@@ -6,15 +6,15 @@ const APIFeatures = require('./../utils/apifeatures.js');
 exports.getALL = (Modal)=>catchAsync(async (req,res,next)=>{
   // console.log(new ApiFeatures());
    //Executing the query
-
+  console.log("AVVVIII");
    const fi  = {};//for nested review route
    if(req.params.tourid)fi = {
        tour:req.params.tourid
    }
    const filter = new APIFeatures(Modal.find(fi),req.query).filter().sort().limitFeild().pagitaion();
-   //console.log(filter);
+  // console.log(filter);
   const doc = await filter.query;
-
+ // console.log(doc);
   res.status(200).json({
    status:'success',
    data:{
@@ -68,7 +68,7 @@ exports.createOne = Modal=> catchAsync( async (req,res,next)=>{
 });
 
 exports.getOne = (Modal,popoptions) =>catchAsync(async (req,res,next)=>{
-  const query =  Modal.findById(req.params.id);
+  let query =  Modal.findById(req.params.id);
   if(popoptions)
   query = query.populate(popoptions);
   const doc = await query;

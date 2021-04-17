@@ -1,5 +1,5 @@
 const Tour = require('./../models/tourmodel.js');
-//const APIFeatures = require('./../utils/apifeatures.js');
+const APIFeatures = require('./../utils/apifeatures.js');
 const catchAsync = require('./../utils/catchAsync.js');
 const ErrorHandle = require('./../utils/Errorhandle.js');
 const factory = require('./factoryhandler');
@@ -363,3 +363,71 @@ exports.getmonthelyplan =catchAsync( async (req,res,next)=>{
 //     }
 //     next();
 // }
+
+
+exports.tourwithin = catchAsync( async (req,res,next)=>{
+    const {distance,latlng,unit} = req.params;
+     
+    const [lat,lng] = latlng.split(',');
+    const radius = unit ==='mi' ? distance/3963.2 : distance/6378.1;
+    if(!lat || !lng)
+    return next(new ErrorHandle("Please Provide latitude and longitiude !!",400)); 
+  
+    const tour = await Tour.find({
+        startLocation :{
+                 $geoWithin:{
+                            $centerSphere:[[lng,lat],radius]
+                            }
+                       }
+    });
+    //console.log(  Tour.find());
+   res.status(200).json({
+       status:"Success",
+       tourlength:tour.length,
+       data:{
+           tour
+       }
+      
+   });
+} );  
+
+exports.getDistances = catchAsync( async (req,res,next)=>{
+    
+    const {latlng,unit} = req.params;
+     
+    const [lat,lng] = latlng.split(',');
+    const multiplier = unit==='mi'?0.00062137:0.001;
+   // const radius = unit ==='mi' ? distance/3963.2 : distance/6378.1;
+    if(!lat || !lng)
+    return next(new ErrorHandle("Please Provide latitude and longitiude !!",400)); 
+     
+  const distances = await Tour.aggregate([
+    {
+        $geoNear : {
+            near:{
+                type:'Point',
+                coordinates:[lng*1,lat*1]
+            },
+            distanceField:"dist.distance",
+            distanceMultiplier:multiplier
+        },
+       
+    },
+  {
+    $project:{
+        dist:1,
+        name:1
+    }
+  }
+]);
+
+res.status(200).json({
+    status:"Success",
+    
+    data:{
+        distances
+    }
+   
+});
+
+});

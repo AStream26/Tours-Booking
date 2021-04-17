@@ -16,7 +16,8 @@ const reviewSchema = mongoose.Schema({
        type:Number,
        default:4.5,
        min:[1,'Rating must be above 1.0'],
-       max:[5,'Rating must be below 5.0']
+       max:[5,'Rating must be below 5.0'],
+       set:val=>Math.round(val*10)/10 
     },
     ratingQuantity:{
        type:Number,
@@ -41,6 +42,8 @@ const reviewSchema = mongoose.Schema({
     toObject:{virtuals:true}
 });
 
+reviewSchema.index({tour:1,user:1},{unique:true});
+
 reviewSchema.pre(/^find/,function(next){
 //    this.populate({ It will cause populate chain
 //        path:'tour',
@@ -53,7 +56,7 @@ this.populate({
     path:'user',
     select:'name photo'
 });
-
+next();
 
 });
 
@@ -87,8 +90,8 @@ reviewSchema.statics.calAverage = async function(tourid){
 }
 reviewSchema.post('save',function(){
     this.constructor.calAverage(this.tour);
-    next();
-})
+  
+});
 
 
 const Review = mongoose.model('Review',reviewSchema);
