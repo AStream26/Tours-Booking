@@ -6,8 +6,8 @@ const APIFeatures = require('./../utils/apifeatures.js');
 exports.getALL = (Modal)=>catchAsync(async (req,res,next)=>{
   // console.log(new ApiFeatures());
    //Executing the query
-  console.log("AVVVIII");
-   const fi  = {};//for nested review route
+ // console.log("AVVVIII");
+   let fi  = {};//for nested review route
    if(req.params.tourid)fi = {
        tour:req.params.tourid
    }

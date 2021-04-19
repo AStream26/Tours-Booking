@@ -108,9 +108,9 @@ tourSchema.virtual('reviews',{
      localField:'_id'
 });
 //DOCUMENT MIDDLEWARE
-// tourSchema.pre('save',function(){
-//       this.slug = slugify(this.name,{lower:true});
-// });
+tourSchema.pre('save',function(){
+      this.slug = slugify(this.name,{lower:true});
+});
 
 // tourSchema.post('save',function(doc,next){
 //      console.log(doc);

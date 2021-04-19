@@ -8,7 +8,7 @@ const reviewRoute  = require('./reviewRoute');
 // tourrouter.param('id',tourcontrol.checkid);
 //const reviewcontroller = require('../controllers/reviewcontroller');
 
-tourrouter.route('/:tourid/review',reviewRoute);
+tourrouter.use('/:tourid/reviews',reviewRoute);
 //tourrouter.route('/:tourid/reviews').post(Authcontroller.protect,Authcontroller.validateuser('users'),reviewControl.createReview);
 
 //creating and mounting router

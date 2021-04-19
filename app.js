@@ -10,6 +10,7 @@ const AppError = require('./utils/Errorhandle.js');
 const userrouter = require('./Routes/userRouter');
 const tourrouter = require('./Routes/tourRoute');
 const reviewrouter = require('./Routes/reviewRoute');
+const viewRouter = require('./Routes/viewRoutes');
 
 const app = express();
 
@@ -65,24 +66,8 @@ app.use((req,res,next)=>{
 
 
 
-app.get('/',(req,res)=>{
-  res.status(200).render('base',{
-      tour:"Manali",
-      user:"Avi Srivastava"
-  });  
-});
-app.get('/overview',(req,res)=>{
-   res.status(200).render('overview',{
-       title:"All Tours"
-   });
-});
 
-app.get('/tour',(req,res)=>{
-    res.status(200).render('tour',{
-        title:"Kasol"
-    });
- });
-
+app.use('/',viewRouter);
 app.use('/api/v1/tours',tourrouter);
 app.use('/api/v1/users',userrouter);
 app.use('/api/v1/review',reviewrouter);

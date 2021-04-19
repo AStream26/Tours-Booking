@@ -25,7 +25,7 @@ exports.getReviewID = (req,res,next)=>{
     next();
 }
 exports.getAllreview = factory.getALL(Review);
-
+exports.getReview = factory.getOne(Review);
 exports.createReview = factory.createOne(Review);
 
 exports.deleteReview = factory.deleteOne(Review);
