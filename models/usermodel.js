@@ -30,7 +30,7 @@ const userSchema  = mongoose.Schema({
         
            validate:{//run only for save and create not on findByIdAndUpdate
                validator:function(el){
-                   return el===this.Password;
+                   return el===this.password;
                },
                message:"Password Must Match"
            }
@@ -51,15 +51,15 @@ const userSchema  = mongoose.Schema({
 });
 userSchema.pre('save',async function(next){
       
-    if(!this.isModified('Password'))
+    if(!this.isModified('password'))
     return next();
 
-    this.Password = await bcrypt.hash(this.Password,12);
+    this.password = await bcrypt.hash(this.password,12);
     this.confirmPassword = undefined;
     next();
 });
 userSchema.pre('save',function(next){
-    if(!this.isModified('Password')||(this.isNew))
+    if(!this.isModified('password')||(this.isNew))
     return next();
     //console.log("ab");
     this.passwordChangeAt = Date.now();

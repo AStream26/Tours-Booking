@@ -11,6 +11,7 @@ const userrouter = require('./Routes/userRouter');
 const tourrouter = require('./Routes/tourRoute');
 const reviewrouter = require('./Routes/reviewRoute');
 const viewRouter = require('./Routes/viewRoutes');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -44,9 +45,13 @@ if(process.env.NODE_ENV==='development'){
 app.use('/api',limiters);
 
 //3)bodyparser- Reading data from body into req.body
-app.use(express.json({limit:'10kb'}));//for post request to get data
+app.use(express.json({limit:'10kb'}));//for post request to get data parses the data from body
+app.use(cookieParser());//parses the data from cookie
+
+
 app.use((req,res,next)=>{
     req.requestTime = new Date().toISOString();
+    console.log(req.cookies);
     next();
 });
 

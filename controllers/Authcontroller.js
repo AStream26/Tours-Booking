@@ -15,12 +15,12 @@ const generatetoken = (id)=>{
 
 const SendToken = (user,statusCode,res)=>{
     const token  = generatetoken(user._id);
-
+  //console.log(token);
     const options = {
         expires :new Date(Date.now()+(process.env.COOKIES_EXPIRE *24 *60 *60 *1000)),
         httpOnly:true
     }
-    user.Password = undefined;
+    user.password = undefined;
     if(process.env.NODE_ENV ==='production')
     options.secure  = true;
 
@@ -37,26 +37,28 @@ const SendToken = (user,statusCode,res)=>{
 }
 exports.singup =   catchAsync( async (req,res,next)=>{
   //  console.log("SS");
+   
     const newUser = await User.create({
         name:req.body.name,
         email:req.body.email,
-        Password:req.body.Password,
+        password:req.body.password,
         confirmPassword:req.body.confirmPassword
     });
+   // console.log(newUser);
    SendToken(newUser,200,res);
 });
 exports.login =  catchAsync( async (req,res,next)=>{
-    const {email,Password} = req.body;
+    const {email,password} = req.body;
     // 1) check if email and password exists
 
-    if(!email || !Password){
+    if(!email || !password){
         return next(new AppError("Please Enter valid Email or Password",400));
     }
   //2) check if user exists or not
-
-  const user = await User.findOne({email:email}).select('+Password');
+//  console.log(email,password);
+  const user = await User.findOne({email:email}).select('+password');
  // console.log(user);
-  if(!user || ! await user.checkPassword(Password,user.Password))
+  if(!user || ! await user.checkPassword(password,user.password))
   return next(new AppError('email or password is incorrect',400));
 
     //3) send token to the user if verification is succesfull
@@ -72,6 +74,9 @@ exports.protect=   catchAsync(  async (req,res,next)=>{
    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
    token = req.headers.authorization.split(' ')[1];
   // console.log(token);
+   }
+   else if(req.cookies.jwt){
+       token  = req.cookies.jwt;
    }
    
    if(!token){
@@ -100,6 +105,43 @@ exports.protect=   catchAsync(  async (req,res,next)=>{
     next();
 
 });
+
+
+
+//for rendered pages 
+exports.isLogined=   catchAsync(  async (req,res,next)=>{
+
+        //1) Getting token from cookies
+
+        if(req.cookies.jwt){
+
+        //2) verification of the token
+        const decoded =  await promisify(jwt.verify)(req.cookies.jwt,process.env.JWT_SECRET);
+    
+    
+    //checking if user exists or not
+    const currentuser = await User.findById(decoded.id);
+    if(!currentuser){
+        return next();
+    }
+
+    //check if user has changed the password after the token was issued 
+    if(currentuser.passwordChange(decoded.iat)){
+        return next();
+    }
+    
+    
+    //there is a logined user
+    res.locals.user = currentuser;
+    
+        
+    }
+    next();
+ });
+
+
+
+
 
 
 exports.validateuser = (...roles)=>{
@@ -163,7 +205,7 @@ exports.resetpassword = catchAsync(async (req,res,next)=>{
         return next(new AppError('Token has been expired or is invalid!!!',400));
 
     }
-    user.Password = req.body.password;
+    user.password = req.body.password;
     user.confirmPassword = req.body.password;
     user.passwordResetToken = undefined;
     user.ExpireResetPasswordToken = undefined;
@@ -181,16 +223,16 @@ exports.resetpassword = catchAsync(async (req,res,next)=>{
 exports.updatePassword = catchAsync(async (req,res,next)=>{
   
 const id = req.user._id;
-const user = await User.findById(id).select('+Password');
+const user = await User.findById(id).select('+password');
 
-const {Password,newPassword} = req.body;
-//console.log(user.Password);
-if(await (!user.checkPassword(Password,user.Password)))
+const {password,newPassword} = req.body;
+//console.log(user.password);
+if(await (!user.checkPassword(password,user.Password)))
 return next(new AppError('Incorrect Password !!!',500));
 
 
 
-user.Password = newPassword;
+user.password = newPassword;
 user.confirmPassword = newPassword;
 await user.save();
 

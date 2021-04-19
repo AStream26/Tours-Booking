@@ -1,8 +1,9 @@
-console.log("hello from client side");
-const locations = JSON.parse(document.getElementById('map').dataset.location);
+//console.log("hello from client side");
+
 //console.log(locations);
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiYXN0cmVhbTI2IiwiYSI6ImNrbm9xdDQ3dDE5aGsyb3BiN3V1bGlsb2oifQ.kCwS7rFDruYWK10fao6Qmg';
+export const displayMap = (locations)=>{
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYXN0cmVhbTI2IiwiYSI6ImNrbm9xdDQ3dDE5aGsyb3BiN3V1bGlsb2oifQ.kCwS7rFDruYWK10fao6Qmg';
 
 var map = new mapboxgl.Map({
     container: 'map',
@@ -46,6 +47,7 @@ map.fitBounds(bound,{
     }
 });
 
+}
 
 
 // var map = new mapboxgl.Map({
