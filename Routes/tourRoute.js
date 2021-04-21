@@ -18,7 +18,10 @@ tourrouter.route('/get-monthly-plans/:year').get(Authcontroller.validateuser("le
 
 
 tourrouter.route('/').get(tourcontrol.getAlltour).post( Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.newtour);
-tourrouter.route('/:id').get(tourcontrol.gettour).patch(Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.updatetour).delete(Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.deletetour);
+tourrouter.route('/:id').get(tourcontrol.gettour)
+                        .patch(Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.uploadTourImages,tourcontrol.resizeImageTour,tourcontrol.updatetour)
+                        .delete(Authcontroller.protect,Authcontroller.validateuser("lead-guide","admin"),tourcontrol.deletetour);
+
 tourrouter.route('/:id/review').post(Authcontroller.protect,Authcontroller.validateuser('user'),reviewControl.createReview);
 
 

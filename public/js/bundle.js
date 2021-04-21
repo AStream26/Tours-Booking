@@ -8983,13 +8983,14 @@ if (logoutbtn) {
 if (submitdatabtn) {
   submitdatabtn.addEventListener('submit', function (e) {
     e.preventDefault();
-    var email = document.getElementById('email').value;
-    var name = document.getElementById('name').value; //console.log(name,email);
+    var form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]); // const email = document.getElementById('email').value;
+    // const name = document.getElementById('name').value;
+    // //console.log(name,email);
 
-    updatedata({
-      name: name,
-      email: email
-    }, 'data');
+    updatedata(form, 'data');
   });
 }
 
