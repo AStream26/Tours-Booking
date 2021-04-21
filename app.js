@@ -46,12 +46,13 @@ app.use('/api',limiters);
 
 //3)bodyparser- Reading data from body into req.body
 app.use(express.json({limit:'10kb'}));//for post request to get data parses the data from body
+app.use(express.urlencoded({extended:true,limit:'10kb'}));
 app.use(cookieParser());//parses the data from cookie
 
 
 app.use((req,res,next)=>{
     req.requestTime = new Date().toISOString();
-    console.log(req.cookies);
+  //  console.log(req.cookies);
     next();
 });
 

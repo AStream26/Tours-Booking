@@ -77,6 +77,7 @@ exports.protect=   catchAsync(  async (req,res,next)=>{
    }
    else if(req.cookies.jwt){
        token  = req.cookies.jwt;
+      // console.log(token);
    }
    
    if(!token){
@@ -90,6 +91,7 @@ exports.protect=   catchAsync(  async (req,res,next)=>{
 
  //checking if user exists or not
  const freshuser = await User.findById(decoded.id);
+ //console.log(freshuser);
  if(!freshuser){
      return next(new AppError('The token no longer exist!!',401));
  }
@@ -100,8 +102,10 @@ exports.protect=   catchAsync(  async (req,res,next)=>{
 
 
  //grant access to protected route
+ res.locals.user = freshuser;
+ //console.log(res.locals.user);
  req.user = freshuser;
-
+ 
     next();
 
 });
@@ -109,35 +113,40 @@ exports.protect=   catchAsync(  async (req,res,next)=>{
 
 
 //for rendered pages 
-exports.isLogined=   catchAsync(  async (req,res,next)=>{
+exports.isLogined=     async (req,res,next)=>{
 
         //1) Getting token from cookies
 
         if(req.cookies.jwt){
 
-        //2) verification of the token
+       try{
+            //2) verification of the token
         const decoded =  await promisify(jwt.verify)(req.cookies.jwt,process.env.JWT_SECRET);
     
     
-    //checking if user exists or not
-    const currentuser = await User.findById(decoded.id);
-    if(!currentuser){
-        return next();
-    }
-
-    //check if user has changed the password after the token was issued 
-    if(currentuser.passwordChange(decoded.iat)){
-        return next();
-    }
+        //checking if user exists or not
+        const currentuser = await User.findById(decoded.id);
+        if(!currentuser){
+            return next();
+        }
     
-    
-    //there is a logined user
-    res.locals.user = currentuser;
+        //check if user has changed the password after the token was issued 
+        if(currentuser.passwordChange(decoded.iat)){
+            return next();
+        }
+        
+        
+        //there is a logined user
+        res.locals.user = currentuser;
+          return next();
+       }catch(err){
+          return  next();
+       }
     
         
     }
-    next();
- });
+   next();
+ };
 
 
 
@@ -222,23 +231,32 @@ exports.resetpassword = catchAsync(async (req,res,next)=>{
 
 exports.updatePassword = catchAsync(async (req,res,next)=>{
   
-const id = req.user._id;
+const id = req.user.id;
+//console.log(id);
 const user = await User.findById(id).select('+password');
 
-const {password,newPassword} = req.body;
+const {password,newPassword,confirmpassword} = req.body;
 //console.log(user.password);
-if(await (!user.checkPassword(password,user.Password)))
+if(await (!user.checkPassword(password,user.password)))
 return next(new AppError('Incorrect Password !!!',500));
 
 
 
 user.password = newPassword;
-user.confirmPassword = newPassword;
+user.confirmPassword = confirmpassword;
 await user.save();
 
 SendToken(user,200,res);
 
-    
+});
 
+exports.logout = (req,res)=>{
+    //console.log("ajjsjs");
+    res.cookie('jwt','loggedout',{
+     
+        expires:new Date(Date.now()+(10*1000)),
+        httpOnly:true
+    });
 
-})
+    res.status(200).json({status:'success'});
+}

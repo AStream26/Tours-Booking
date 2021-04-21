@@ -10,8 +10,10 @@ const userrouter = express.Router();
 
 userrouter.route('/singup').post(authcontrol.singup);
 userrouter.route('/login').post(authcontrol.login);
+userrouter.route('/logout').get(authcontrol.logout);
 userrouter.route('/forgotpassword').post(authcontrol.forgotPassword);
 userrouter.route('/resetpassword/:token').post(authcontrol.resetpassword);
+
 
 
 //Protect all routes after this middle ware
@@ -19,7 +21,7 @@ userrouter.use(authcontrol.protect);
 
 userrouter.route('/updatepassword').patch(authcontrol.updatePassword);
 userrouter.route('/me').get(usercontrol.getMe,usercontrol.getuser);
-userrouter.route('/updateuser').post(usercontrol.updateMe);
+userrouter.route('/updateuser').patch(usercontrol.updateMe);
 userrouter.route('/deleteuser').delete(usercontrol.deleteMe);
 
 

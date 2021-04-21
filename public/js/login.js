@@ -18,9 +18,28 @@ export const login = async (email,password)=>{
 
      }
         
-        console.log(res.data.status);
+        //console.log(res.data.status);
     }catch(err){
-        alert(err.response.message);
+       // console.log(err.response.data.message);
+        alert(err.response.data.message);
+    }
+}
+
+export const logout = async ()=>{
+    try{
+      
+        const res = await axios({
+            method:'GET',
+            url:'http://localhost:4001/api/v1/users/logout'
+        });
+      //  console.log("akaka");
+
+        if(res.data.status==='success'){
+        location.reload(true); //reload from server side not from browser side
+        }
+
+    }catch(err){
+        alert(err.response.data.message);
     }
 }
 

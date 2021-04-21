@@ -7,7 +7,7 @@ const factory = require('./factoryhandler');
 
 
 const filterObject = (obj,field)=>{
-    let newobj;
+    let newobj={};
     Object.keys(obj).forEach(el=>{
         if(field.includes(el)){
             newobj[el] = obj[el];
@@ -22,14 +22,14 @@ exports.getMe = (req,res,next)=>{
 }
 exports.updateMe = catchAsync(async (req,res,next)=>{
      
-    const canUpdate = ['email','Name'];
+    const canUpdate = ['email','name'];
 
     if(req.body.Password||req.body.confirmPassword)
     return next(new AppError(`Password can't be updated using this route !!!`,500));
-
+ 
     const obj = filterObject(req.body,canUpdate);
-    const user = User.findById(req.user._id);
-    const updateduser = await User.findByIdAndUpdate(user._id,obj,{
+   
+    const updateduser = await User.findByIdAndUpdate(req.user.id,obj,{
         runValidators:true,
         new:true
     });
