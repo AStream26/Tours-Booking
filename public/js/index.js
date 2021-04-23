@@ -2,12 +2,14 @@ import '@babel/polyfill';
 const {login,logout} = require('./login');
 const {displayMap}  = require('./mapbox');
 const{updatedata} = require('./usersetting.js');
+const {checkout} = require('./stripes');
 
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
 const logoutbtn = document.querySelector('.nav__el--logout');
 const submitdatabtn = document.querySelector('.form-user-data');
 const updatepassword = document.querySelector('.form-user-settings');
+const bookbtn = document.getElementById('tour-booked');
 //console.log(logoutbtn);form-user-settings
 if(mapBox){
     const locations = JSON.parse(mapBox.dataset.location);
@@ -60,4 +62,12 @@ if(updatepassword){
          document.getElementById('password-confirm').value='';
          document.querySelector('.btn--updating').textContent='Save Password';
     });
+    }
+
+    if(bookbtn){
+        bookbtn.addEventListener('click',e=>{
+            const id = e.target.dataset.tourid;
+            console.log(id);
+            checkout(id);
+        })
     }

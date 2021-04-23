@@ -11,7 +11,9 @@ const userrouter = require('./Routes/userRouter');
 const tourrouter = require('./Routes/tourRoute');
 const reviewrouter = require('./Routes/reviewRoute');
 const viewRouter = require('./Routes/viewRoutes');
+const BookRoute = require('./Routes/bookingRoute');
 const cookieParser = require('cookie-parser');
+const csp = require('express-csp');
 
 
 const app = express();
@@ -34,7 +36,75 @@ app.use(xss());
 
 
 //1) setting security http header
+//app.use(helmet());
+//app.use(helmet({ contentSecurityPolicy: false }));
 app.use(helmet());
+csp.extend(app, {
+  policy: {
+    directives: {
+      'default-src': ['self'],
+      'style-src': ['self', 'unsafe-inline', 'https:'],
+      'font-src': ['self', 'https://fonts.gstatic.com'],
+      'script-src': [
+        'self',
+        'unsafe-inline',
+        'data',
+        'blob',
+        'https://js.stripe.com',
+        'https://*.mapbox.com',
+        'https://*.cloudflare.com/',
+        'https://bundle.js:8828',
+        'ws://localhost:56558/',
+      ],
+      'worker-src': [
+        'self',
+        'unsafe-inline',
+        'data:',
+        'blob:',
+        'https://*.stripe.com',
+        'https://*.mapbox.com',
+        'https://*.cloudflare.com/',
+        'https://bundle.js:*',
+        'ws://localhost:*/',
+      ],
+      'frame-src': [
+        'self',
+        'unsafe-inline',
+        'data:',
+        'blob:',
+        'https://*.stripe.com',
+        'https://*.mapbox.com',
+        'https://*.cloudflare.com/',
+        'https://bundle.js:*',
+        'ws://localhost:*/',
+      ],
+      'img-src': [
+        'self',
+        'unsafe-inline',
+        'data:',
+        'blob:',
+        'https://*.stripe.com',
+        'https://*.mapbox.com',
+        'https://*.cloudflare.com/',
+        'https://bundle.js:*',
+        'ws://localhost:*/',
+      ],
+      'connect-src': [
+        'self',
+        'unsafe-inline',
+        'data:',
+        'blob:',
+        'wss://<HEROKU-SUBDOMAIN>.herokuapp.com:<PORT>/',
+        'https://*.stripe.com',
+        'https://*.mapbox.com',
+        'https://*.cloudflare.com/',
+        'https://bundle.js:*',
+        'ws://localhost:*/',
+      ],
+    },
+  },
+});
+
 //2) serving static files
 app.use(express.static(`${__dirname}/public`));
 
@@ -78,6 +148,7 @@ app.use('/',viewRouter);
 app.use('/api/v1/tours',tourrouter);
 app.use('/api/v1/users',userrouter);
 app.use('/api/v1/review',reviewrouter);
+app.use('/api/v1/bookings',BookRoute);
 app.all('*',(req,res,next)=>{
     return next(new AppError(`can't find the ${req.originalUrl} route`,404));
 });

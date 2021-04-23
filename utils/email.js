@@ -7,22 +7,29 @@ module.exports = class Email {
      this.to = user.email,
      this.firstName = user.name.split(' ')[0],
      this.url = url,
-     this.form = `Astream26 <${process.env.EMAIL_FROM}>`
+     this.from = `Astream26 <${process.env.EMAIL_FROM}>`
   }
  
   //creating a transport
   newcreateTransport(){
 
-    if(process.env.NODE_ENV==='production'){
+    if(process.env.NODE_ENV==='development'){
      //sendgrid
-     return 1;
+     console.log("SEND");
+     return nodemailer.createTransport({
+       service :'SendGrid',
+       auth:{
+        user: process.env.SENDGRID_EMAIL,
+        pass: process.env.SENDGRID_PASS
+       }
+     })
     }
     return nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
-      port: 2525,
+      host: process.env.HOST_DEV_EMAIL,
+      port: process.env.PORT_DEV_EMAIL,
       auth: {
-        user: "5743f63eeb5093",
-        pass: "6544711bf442c0"
+        user: process.env.USER_DEV_EMAIL,
+        pass: process.env.PASS_DEV_EMAIL 
       }
     });
 
@@ -33,7 +40,7 @@ module.exports = class Email {
     //send the actual mail
 
     //1)Render HTML  based on PUG template
-    const html =  pug.renderFile(`${__dirname}/../views/emails/${tempalte}.pug`,{
+    const html =  pug.renderFile(`${__dirname}/../views/email/${template}.pug`,{
       firstName:this.firstName,
       url:this.url,
       subject
@@ -56,7 +63,10 @@ module.exports = class Email {
   //various type of mails
 
   async sendWelcome(){
-    await this.send('Welcome','Welcome to the Natours Family')
+    await this.send('welcome','Welcome to the Natours Family')
+  }
+  async sendforgotPassword(){
+    await this.send('resetPassword','Your Password reset token (valid for 10 minute)')
   }
 
 
