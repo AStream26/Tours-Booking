@@ -91,12 +91,12 @@ module.exports = (err,req,res,next)=>{
 
     
     if(process.env.NODE_ENV==='development'){
-        console.log("Development");
+      //  console.log("Development");
         sendErrordevelopment(err,req,res);
 
     }
     else if(process.env.NODE_ENV==='production'){
-        console.log("Production");
+      //  console.log("Production");
         let error ={...err};
         error.message = err.message;
       //  console.log(Object.keys(err));

@@ -2,7 +2,7 @@ const axios = require('axios');
 
 export const updatedata = async (data,type)=>{
     try{
-       const url = type==='data'?'http://localhost:4001/api/v1/users/updateuser':'http://localhost:4001/api/v1/users/updatepassword';
+       const url = type==='data'?'/api/v1/users/updateuser':'/api/v1/users/updatepassword';
        //console.log(data);
         const res = await axios({
             method:'PATCH',

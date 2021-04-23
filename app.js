@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const morgan  = require('morgan');
 const rateLimit = require('express-rate-limit');
+const compress = require('compression');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
@@ -32,7 +33,7 @@ app.use(mongoSanitize());
 
 //Data sanitization against xss attack
 app.use(xss());
-
+app.use(compress);
 
 
 //1) setting security http header

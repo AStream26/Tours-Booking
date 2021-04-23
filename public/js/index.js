@@ -67,7 +67,7 @@ if(updatepassword){
     if(bookbtn){
         bookbtn.addEventListener('click',e=>{
             const id = e.target.dataset.tourid;
-            console.log(id);
+          //  console.log(id);
             checkout(id);
         })
     }

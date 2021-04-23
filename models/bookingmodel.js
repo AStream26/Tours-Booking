@@ -28,7 +28,7 @@ const Bookingschema  = mongoose.Schema({
 });
 
 Bookingschema.pre(/^find/,function(next){
-    console.log("populate");
+   // console.log("populate");
     this.populate('user').populate({
         path:'tour',
         select:'name'
