@@ -8,7 +8,7 @@ const factory = require('./factoryhandler');
 const Book = require('../models/bookingmodel');
 
 exports.getCheckoutSession = catchAsync( async (req,res,next)=>{
-      
+     // console.log("AAAA");
     //1 Get the tour data
     const tour = await Tour.findById(req.params.tourid);
     

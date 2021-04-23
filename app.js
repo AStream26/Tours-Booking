@@ -18,7 +18,7 @@ const csp = require('express-csp');
 
 
 const app = express();
-
+app.use(compress());
 app.set('view engine','pug');
 app.set('views',path.join(__dirname,'views'));
 
@@ -33,7 +33,7 @@ app.use(mongoSanitize());
 
 //Data sanitization against xss attack
 app.use(xss());
-//app.use(compress);
+
 
 
 //1) setting security http header
