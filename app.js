@@ -33,7 +33,7 @@ app.use(mongoSanitize());
 
 //Data sanitization against xss attack
 app.use(xss());
-app.use(compress);
+//app.use(compress);
 
 
 //1) setting security http header
