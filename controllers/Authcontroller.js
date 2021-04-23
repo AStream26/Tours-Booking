@@ -13,16 +13,17 @@ const generatetoken = (id)=>{
     });
 }
 
-const SendToken = (user,statusCode,res)=>{
+const SendToken = (user,statusCode,res,req)=>{
     const token  = generatetoken(user._id);
   //console.log(token);
     const options = {
         expires :new Date(Date.now()+(process.env.COOKIES_EXPIRE *24 *60 *60 *1000)),
-        httpOnly:true
+        httpOnly:true,
+        secure: req.secure || req.headers['x-forwarded-proto']==='https'
     }
     user.password = undefined;
-    if(process.env.NODE_ENV ==='production')
-    options.secure  = true;
+    // if(process.env.NODE_ENV ==='production')
+    // options.secure  = true;
 
     res.cookie('jwt',token,options);
 
@@ -47,7 +48,7 @@ exports.singup =   catchAsync( async (req,res,next)=>{
     const url = `${req.protocol}://${req.get('host')}/me`;
     await new Email(newUser,url).sendWelcome();
    // console.log(newUser);
-   SendToken(newUser,200,res);
+   SendToken(newUser,200,res,req);
 });
 exports.login =  catchAsync( async (req,res,next)=>{
     const {email,password} = req.body;
@@ -64,7 +65,7 @@ exports.login =  catchAsync( async (req,res,next)=>{
   return next(new AppError('email or password is incorrect',400));
 
     //3) send token to the user if verification is succesfull
-    SendToken(user,200,res);
+    SendToken(user,200,res,req);
    
 });
 
@@ -222,7 +223,7 @@ exports.resetpassword = catchAsync(async (req,res,next)=>{
 
     //Login the user in
 
-    SendToken(user,200,res);
+    SendToken(user,200,res,req);
 
 
 });
@@ -246,7 +247,7 @@ user.password = newPassword;
 user.confirmPassword = confirmpassword;
 await user.save();
 
-SendToken(user,200,res);
+SendToken(user,200,res,req);
 
 });
 

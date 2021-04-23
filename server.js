@@ -37,6 +37,12 @@ process.on('unhandledRejection',err=>{
     });
 });
 
+process.on('SIGTERM',()=>{
+    console.log('SIGTERM receive ,Shutting down Gracefully .....');
+     server.close(()=>{
+         console.log("process treminated ....");
+     })
+});
 
 
 
