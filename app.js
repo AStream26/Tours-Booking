@@ -1,4 +1,5 @@
 const path = require('path');
+const cors = require('cors');
 const express = require('express');
 const morgan  = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -15,6 +16,7 @@ const viewRouter = require('./Routes/viewRoutes');
 const BookRoute = require('./Routes/bookingRoute');
 const cookieParser = require('cookie-parser');
 const csp = require('express-csp');
+
 
 
 const app = express();
@@ -107,6 +109,11 @@ csp.extend(app, {
   },
 });
 
+//Implement CORS
+app.use(cors());
+
+app.options('*',cors());
+//app.use('/api/v1/tours/',cors()); --specific routes
 //2) serving static files
 app.use(express.static(`${__dirname}/public`));
 
