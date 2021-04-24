@@ -23,11 +23,18 @@ exports.getCheckoutSession = catchAsync( async (req,res,next)=>{
       client_reference_id:req.params.tourid,
 
       line_items:[{
-          name:`${tour.name} Tour`,
+          price_data:{
+            currency:'inr',
+            product_data:{
+                name:`${tour.name} Tour`,
           description:`${tour.summary}`,
-          images:['https://unsplash.com/photos/eEi28RBojJc'],
-          amount:tour.price * 100,
-          currency:'inr',
+          images:[`${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`]
+            },
+            amount:tour.price * 100
+          }
+         ,
+         
+          
           quantity:1
       }]
   });
