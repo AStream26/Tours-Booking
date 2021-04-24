@@ -66,10 +66,15 @@ if(updatepassword){
 
     if(bookbtn){
         bookbtn.addEventListener('click',e=>{
-            bookbtn.textContent = 'Prcocessing ......';
+           document.getElementById('tour-booked').textContent = 'Prcocessing ......';
             const id = e.target.dataset.tourid;
           //  console.log(id);
             checkout(id);
             bookbtn.textContent = 'Book Tour Now';
         })
+    }
+
+    const alert1 = document.querySelector('body').dataset.alert;
+    if(alert1){
+        alert(alert1);
     }

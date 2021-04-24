@@ -6,6 +6,7 @@ const app = express();
 const Router  = express.Router();
 
 //app.use(Authcontroller.protect);
+Router.use(BookControl.alert);
 Router.get('/checkout-session/:tourid',Authcontroller.protect,BookControl.getCheckoutSession);
 
 app.use(Authcontroller.protect);

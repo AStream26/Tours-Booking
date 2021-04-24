@@ -8,6 +8,17 @@ const factory = require('./factoryhandler');
 const Book = require('../models/bookingmodel');
 const User = require('../models/usermodel.js');
 
+
+
+exports.alert = (req,res,next)=>{
+    const {alert} = req.query;
+
+    if(alert==='booking'){
+        res.locals.alert = 'Your Booking is SuccesFull Please Check Your email for conformation !!';
+    }
+    next();
+}
+
 exports.getCheckoutSession = catchAsync( async (req,res,next)=>{
      // console.log("AAAA");
     //1 Get the tour data
@@ -17,7 +28,7 @@ exports.getCheckoutSession = catchAsync( async (req,res,next)=>{
 // success_url:`${req.protocol}://${req.get('host')}/?tour=${req.params.tourid}&user=${req.user.id}&price=${tour.price}`,//
   const session = await stripe.checkout.sessions.create({
       payment_method_types:['card'],
-      success_url:`${req.protocol}://${req.get('host')}/my-booking`,
+      success_url:`${req.protocol}://${req.get('host')}/my-booking/?alert=booking`,
       cancel_url:`${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
       customer_email:req.user.email,
       client_reference_id:req.params.tourid,
