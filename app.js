@@ -16,7 +16,7 @@ const viewRouter = require('./Routes/viewRoutes');
 const BookRoute = require('./Routes/bookingRoute');
 const cookieParser = require('cookie-parser');
 const csp = require('express-csp');
-
+const BookControl = require('./controllers/bookingcontroller');
 
 
 const app = express();
@@ -123,6 +123,8 @@ if(process.env.NODE_ENV==='development'){
 }
 //4) limiting the request
 app.use('/api',limiters);
+
+app.post('/checkout-completed',app.use(express.raw()),BookControl.webhookcheckot);
 
 //3)bodyparser- Reading data from body into req.body
 app.use(express.json({limit:'10kb'}));//for post request to get data parses the data from body

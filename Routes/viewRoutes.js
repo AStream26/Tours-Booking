@@ -6,8 +6,8 @@ const { route } = require('./userRouter');
 const Bookcontrol = require('../controllers/bookingcontroller');
 
 //router.use(Authcontroller.isLogined);
-
-  router.get('/',Bookcontrol.CreateBooking,Authcontroller.isLogined,viewController.getOverview);
+//,Bookcontrol.CreateBooking
+  router.get('/',Authcontroller.isLogined,viewController.getOverview);
   
   router.get('/tour/:slug',Authcontroller.isLogined,viewController.getTour);
   router.get('/login',Authcontroller.isLogined,viewController.login);
