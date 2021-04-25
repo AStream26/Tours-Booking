@@ -14,7 +14,7 @@ export const login = async (email,password)=>{
          alert('Logged in successfully !!');
          window.setTimeout(()=>{
            location.assign('/');
-         },1500)
+         },1000)
 
      }
         
@@ -35,7 +35,7 @@ export const logout = async ()=>{
       //  console.log("akaka");
 
         if(res.data.status==='success'){
-        location.reload(true); //reload from server side not from browser side
+        location.assign('/'); //reload from server side not from browser side
         }
 
     }catch(err){
@@ -43,5 +43,29 @@ export const logout = async ()=>{
     }
 }
 
+export const Signup = async(name,email,password,confirmPassword)=>{
+   try{
+        const res = await axios({
+            method:'POST',
+            url:'/api/v1/users/singup',
+            data:{
+                name,
+                email,
+                password,
+                confirmPassword
+            }
+        });
+        if(res.data.status==='success'){
+            alert('Account created successfully !!');
+            window.setTimeout(()=>{
+              location.assign('/');
+            },1000)
+   
+   }
+}
+   catch(err){
+       alert(err.response.data.message);
+   }
+}
 
 

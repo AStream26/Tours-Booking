@@ -1,5 +1,5 @@
 import '@babel/polyfill';
-const {login,logout} = require('./login');
+const {login,logout,Signup} = require('./login');
 const {displayMap}  = require('./mapbox');
 const{updatedata} = require('./usersetting.js');
 const {checkout} = require('./stripes');
@@ -10,6 +10,7 @@ const logoutbtn = document.querySelector('.nav__el--logout');
 const submitdatabtn = document.querySelector('.form-user-data');
 const updatepassword = document.querySelector('.form-user-settings');
 const bookbtn = document.getElementById('tour-booked');
+const signup = document.querySelector('.form--signup');
 //console.log(logoutbtn);form-user-settings
 if(mapBox){
     const locations = JSON.parse(mapBox.dataset.location);
@@ -77,4 +78,23 @@ if(updatepassword){
     const alert1 = document.querySelector('body').dataset.alert;
     if(alert1){
         alert(alert1);
+    }
+
+    if(signup){
+        
+     signup.addEventListener('submit',e=>{
+         e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const name = document.getElementById('name').value;
+        const password = document.getElementById('password').value;
+        const confirmpassword = document.getElementById('confirm-password').value;
+        if(password !== confirmpassword){
+            alert("Password and Confirm Password must Match !!");
+        }
+        document.getElementById('creating').textContent = 'Creating .....';
+       Signup(name,email,password,confirmpassword);
+       document.getElementById('creating').textContent = 'Create Account';
+     })
+
     }

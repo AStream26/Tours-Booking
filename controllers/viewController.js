@@ -50,6 +50,14 @@ res.status(200).render('overview',{
  });
 
 
+ exports.signup = catchAsync( async(req,res,next)=>{
+   
+   res.status(200).render('signup',{
+     title:"Signup"
+   });
+     
+ });
+
  exports.account = catchAsync(async (req,res,next)=>{
    
   res.status(200).set(

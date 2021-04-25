@@ -11,6 +11,7 @@ const Bookcontrol = require('../controllers/bookingcontroller');
   
   router.get('/tour/:slug',Authcontroller.isLogined,viewController.getTour);
   router.get('/login',Authcontroller.isLogined,viewController.login);
+  router.get('/signup',viewController.signup);
   router.get('/me',Authcontroller.protect,viewController.account);
   router.post('/submit-user-data',Authcontroller.protect,viewController.submitdata);
   router.get('/my-booking',Authcontroller.protect,viewController.getBooking);
