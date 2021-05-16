@@ -1,5 +1,6 @@
 const Tour = require('../models/tourmodel');
 const User = require('../models/usermodel');
+const Review = require('../models/reviewmodel');
 const catchAsync = require('../utils/catchAsync');
 const Errorhandler = require('../utils/Errorhandle');
 const Book = require('../models/bookingmodel');
@@ -104,5 +105,18 @@ exports.getBooking = catchAsync(async(req,res,next)=>{
     title:'My Tours',
     tours
   });
+
+});
+
+exports.getmyreview = catchAsync(async(req,res,next)=>{
+                  
+        const reviews  = await Review.find({user:req.user.id});
+
+        res.status(200).json({
+          status:"success",
+          data:{
+            reviews
+          }
+        });
 
 });

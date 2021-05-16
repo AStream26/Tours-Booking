@@ -15,6 +15,7 @@ const Bookcontrol = require('../controllers/bookingcontroller');
   router.get('/me',Authcontroller.protect,viewController.account);
   router.post('/submit-user-data',Authcontroller.protect,viewController.submitdata);
   router.get('/my-booking',Authcontroller.protect,viewController.getBooking);
+  router.get('/my-reviews',Authcontroller.protect,viewController.getmyreview);
 
 
 module.exports = router;
