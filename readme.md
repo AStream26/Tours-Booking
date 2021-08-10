@@ -2,7 +2,7 @@
 
 ### [Live Site](https://natours-india.herokuapp.com/)
 
-<a href="https://imgbox.com/SKvFxu4S" target="_blank"><img src="https://thumbs2.imgbox.com/00/4e/SKvFxu4S_t.png" alt="Natours"/></a>
+<img src="https://thumbs2.imgbox.com/00/4e/SKvFxu4S_t.png" alt="Natours"/>
 
 ## Description
 
